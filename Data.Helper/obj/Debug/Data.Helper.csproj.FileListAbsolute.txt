@@ -1,0 +1,5 @@
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\Data.Helper\bin\Debug\Data.Helper.dll
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\Data.Helper\bin\Debug\Data.Helper.pdb
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\Data.Helper\obj\Debug\Data.Helper.csprojResolveAssemblyReference.cache
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\Data.Helper\obj\Debug\Data.Helper.dll
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\Data.Helper\obj\Debug\Data.Helper.pdb

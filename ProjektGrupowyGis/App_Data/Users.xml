@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Users>
+  <User>
+    <UserId>1</UserId>
+    <Login>Admin</Login>
+    <Name>Admin</Name>
+    <Email>admin@admin.pl</Email>
+    <Password>Admin123!</Password>
+  </User>
+  <User>
+    <UserId>2</UserId>
+    <Login>User</Login>
+    <Name>User</Name>
+    <Email>user@user.pl</Email>
+    <Password>User123!</Password>
+  </User>
+  <User>
+    <UserId>3</UserId>
+    <Login>Daria</Login>
+    <Name>Daria</Name>
+    <Email>daria@pwrs.pl</Email>
+    <Password>Daria_123!</Password>
+  </User>
+</Users>
