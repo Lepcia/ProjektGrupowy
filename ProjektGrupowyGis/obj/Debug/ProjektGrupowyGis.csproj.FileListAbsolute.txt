@@ -191,3 +191,4 @@ C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\Microsoft.AI
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\Microsoft.AI.Web.xml
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.dll
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.pdb
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csprojResolveAssemblyReference.cache

@@ -91,17 +91,9 @@ function initialize() {
 }
 
 function searchLocations() {
-    var locationType = document.getElementById("idSelectPlace").value;
+    //var locationType = document.getElementById("idSelectPlace").value;
     var radius = document.getElementById("idSelectRadius").value;
-
-    switch (locationType) {
-        case 'Hotel':
-            loadPlaces(radius, 'lodging');
-            break;
-        case 'Restaurant':
-            loadPlaces(radius, 'restaurant');
-            break;
-    };
+    loadPlaces(radius, 'lodging');
 }
 
 //Find my current Location
