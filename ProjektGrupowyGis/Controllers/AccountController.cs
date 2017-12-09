@@ -3,46 +3,69 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Data.Helper;
-using Data.Helper.External.Models;
 using ProjektGrupowyGis.Models;
 using System.Threading.Tasks;
+using ProjektGrupowyGis.DAL;
+using System.Web.Security;
 
 namespace ProjektGrupowyGis.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
-        [AllowAnonymous]
+        private SqlExecutor _sqlExecutor;
+
+        public AccountController()
+        {
+            _sqlExecutor = new SqlExecutor();
+        }
+
         public ActionResult Register()
         {
             return View();
         }
 
-        public AccountController()
-        { }
+        public ActionResult Login()
+        {
+            return View();
+        }
 
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        [AcceptVerbs("POST")]
         public ActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid) {
-                XMLReader _xmlReader = new XMLReader();
-                XMLWriter _xmlWriter = new XMLWriter();
+                var result = _sqlExecutor.CheckIfLoginTaken(model.Login);
+                if (result != null) {
+                    ModelState.AddModelError("LoginTaken", "Login already taken.");
+                }
+                User user = new User { Login = model.Login, Name = model.Name, Email = model.Email, Password = model.Password, UserId = null };
+                _sqlExecutor.AddUser(user);
+                return RedirectToAction("Login", "Account");
+            }
+            return View(model);
+        }
 
-                var loginTaken = _xmlReader.CheckIfLoginTaken(model.Login);
-                if (!loginTaken){
-                    _xmlWriter.InsertUser(model.Login, model.Name, model.Email, model.Password);
+        [AcceptVerbs("POST")]
+        public ActionResult Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _sqlExecutor.CheckPassword(model.Login, model.Password);
+                if (result != null) {
+                    FormsAuthentication.SetAuthCookie(result.Login, false);
+                    return RedirectToAction("Index", "Map");
                 }
                 else {
-                    ModelState.AddModelError("LoginTaken", "Login already taken.");
+                    ModelState.AddModelError("WrongLoginData", "Login or password is incorrect.");
+                    return View(model);
                 }
             }
             return View(model);
+        }
+
+        public ActionResult LogOff()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Map");
         }
     }
 }
