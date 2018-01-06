@@ -1,20 +1,57 @@
 ﻿var allMarkers = [];
 
-function createMarker(pos) {
+function createMarker(place) {
+    console.log("Create marker");
     var marker = new google.maps.Marker({
         map: map,
-        position: pos,
+        position: place.geometry.location,
         clickable: true
     });
 
-    //marker.info = new google.maps.InfoWindow({
-    //	content: '<div><strong>' + place.name + '</strong><br>' +
-    //		place.vicinity
-    //});
-    //google.maps.event.addListener(marker, 'click', function() {
-    //	marker.info.open(map, marker);
-    //});
+    var content = createMarkerContent(place);
+
+    marker.info = new google.maps.InfoWindow({
+        content: content,
+        maxHeight: 200,
+        
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+    	marker.info.open(map, marker);
+    });
     allMarkers.push(marker);
+}
+
+function createMarkerContent(place) {
+    var hostnameRegexp = new RegExp('^https?://.+?/');
+    var content = '<div class="scrollFix"><img class="hotelIcon" ' +
+        'src="' + place.icon + '" height="25" width="25" /> ' + '<b><a href="' + place.url +
+        '"><br>' + place.name + '</a></b><br>' + place.vicinity;
+
+    if (place.formatted_phone_number) {
+        content += "<br>" + place.formatted_phone_number;
+    } 
+    if (place.rating) {
+        var ratingHtml = '';
+        for (var i = 0; i < 5; i++) {
+            if (place.rating < (i + 0.5)) {
+                ratingHtml += '&#10025;';
+            } else {
+                ratingHtml += '&#10029;';
+            }
+        }
+        content += "<br>" + ratingHtml;
+    } 
+    if (place.website) {
+        var fullUrl = place.website;
+        var website = hostnameRegexp.exec(place.website);
+        if (website === null) {
+            website = 'http://' + place.website + '/';
+            fullUrl = website;
+        }
+        content += "<br><a href='" + website + "'>" + website + "</a>";
+    }
+    content += "</div>";
+    return content;
 }
 
 function clearMarkers() {

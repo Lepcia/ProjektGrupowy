@@ -1,19 +1,20 @@
-﻿using System;
+﻿using ProjektGrupowyGis.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Configuration;
-using Dapper;
 using System.Data;
 using System.Data.SqlClient;
-using ProjektGrupowyGis.Models;
+using System.Linq;
+using System.Web;
+using Dapper;
+
 
 namespace ProjektGrupowyGis.DAL
 {
-    public class SqlExecutor
+    public class AccountSqlExecutor
     {
-        private string _connectionString = ConfigurationManager.ConnectionStrings["AccountContext"].ConnectionString;
-        private IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["AccountContext"].ConnectionString);
+        private string _connectionString = ConfigurationManager.ConnectionStrings["Context"].ConnectionString;
+        private IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["Context"].ConnectionString);
 
         public User CheckIfLoginTaken(string login)
         {
@@ -33,8 +34,9 @@ namespace ProjektGrupowyGis.DAL
         {
             var sqlQuery = $"INSERT INTO USERS(LOGIN,NAME,EMAIL,PASSWORD) values(@Login,@Name,@Email,@Password); SELECT CAST(SCOPE_IDENTITY() as int)";
             var id = db.Query<int>(sqlQuery, user).SingleOrDefault();
-            
+
             return id;
         }
+        
     }
 }

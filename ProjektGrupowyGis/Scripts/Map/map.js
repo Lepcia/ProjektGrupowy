@@ -174,7 +174,7 @@ function callback(results, status) {
                     placeId: results[i].place_id
                 }, function (place, status) {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        createMarker(place.geometry.location);
+                        createMarker(place);
                         addPlaceToTable(place);
                     }
                 });
@@ -185,6 +185,7 @@ function callback(results, status) {
 }
 
 function addPlaceToTable(place) {
+    console.log("Places", place);
     var lng = place.geometry.location;
     var list = document.getElementById("places-list");
     var row = document.createElement('tr');

@@ -12,11 +12,11 @@ namespace ProjektGrupowyGis.Controllers
 {
     public class AccountController : Controller
     {
-        private SqlExecutor _sqlExecutor;
+        private AccountSqlExecutor _accountSqlExecutor;
 
         public AccountController()
         {
-            _sqlExecutor = new SqlExecutor();
+            _accountSqlExecutor = new AccountSqlExecutor();
         }
 
         public ActionResult Register()
@@ -33,12 +33,12 @@ namespace ProjektGrupowyGis.Controllers
         public ActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid) {
-                var result = _sqlExecutor.CheckIfLoginTaken(model.Login);
+                var result = _accountSqlExecutor.CheckIfLoginTaken(model.Login);
                 if (result != null) {
                     ModelState.AddModelError("LoginTaken", "Login already taken.");
                 }
                 User user = new User { Login = model.Login, Name = model.Name, Email = model.Email, Password = model.Password, UserId = null };
-                _sqlExecutor.AddUser(user);
+                _accountSqlExecutor.AddUser(user);
                 return RedirectToAction("Login", "Account");
             }
             return View(model);
@@ -49,7 +49,7 @@ namespace ProjektGrupowyGis.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _sqlExecutor.CheckPassword(model.Login, model.Password);
+                var result = _accountSqlExecutor.CheckPassword(model.Login, model.Password);
                 if (result != null) {
                     FormsAuthentication.SetAuthCookie(result.Login, false);
                     return RedirectToAction("Index", "Map");
