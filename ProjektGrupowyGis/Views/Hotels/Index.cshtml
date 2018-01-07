@@ -1,7 +1,22 @@
-﻿
+﻿@model IEnumerable<ProjektGrupowyGis.Models.Hotel>
+@using GridMvc.Html
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<script src="@Url.Content("~/Scripts/jquery.min.js")" type="text/javascript"> </script>
+<link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")" type="text/javascript"> </script>
+
+<h2>Hotels List</h2>
+
+@Html.Grid(Model).Columns(columns =>
+{
+    columns.Add().Encoded(false).Sanitized(false).SetWidth(30).RenderValueAs(e => Html.ActionLink("Edit", "Edit", new { idHotel = e.Id_Hotel }));
+    columns.Add(c => c.Name).Titled("Name").Filterable(true);
+    columns.Add(c => c.FullAddress).Titled("Address").Filterable(true);
+    columns.Add(c => c.Google_Rate).Titled("Google Rating").Filterable(true);
+    columns.Add(c => c.Phone).Titled("Phone number");
+    columns.Add(c => c.Webpage).Titled("Website");
+}).WithPaging(20).Sortable(true);
 

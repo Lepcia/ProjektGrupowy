@@ -51,10 +51,10 @@ function createMarkerContentDB(place) {
     if (place.Phone) {
         content += "<br>" + place.Phone;
     }
-    if (place.Rating) {
+    if (place.Rate) {
         var ratingHtml = '';
         for (var i = 0; i < 5; i++) {
-            if (place.Rating < (i + 0.5)) {
+            if (place.Rate < (i + 0.5)) {
                 ratingHtml += '&#10025;';
             } else {
                 ratingHtml += '&#10029;';

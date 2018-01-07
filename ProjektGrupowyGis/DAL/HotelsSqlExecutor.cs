@@ -44,5 +44,18 @@ namespace ProjektGrupowyGis.DAL
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
         }
+
+        public Hotel FindHotelById(int id) {
+            var sqlQuery = $"SELECT * FROM HOTELS WHERE ID_HOTEL = '{id}'";
+            Hotel hotel = db.Query<Hotel>(sqlQuery).SingleOrDefault();
+            return hotel;
+        }
+
+        public void EditHotel(string idHotel, string name, string fulladdress, string webpage, string phone, string lat, string lng)
+        {
+            var sqlQuery = $"UPDATE HOTELS SET NAME = '{name}', FULLADDRESS = '{fulladdress}', WEBPAGE = '{webpage}', PHONE = '{phone}', LAT = '{lat}', LNG = '{lng}' WHERE ID_HOTEL = '{idHotel}';"+
+                "SELECT * FROM HOTELS WHERE ID_HOTEL = " + idHotel;
+            Hotel hotel = db.Query<Hotel>(sqlQuery).SingleOrDefault();
+        }
     }
 }

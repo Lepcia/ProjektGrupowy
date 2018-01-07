@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ProjektGrupowyGis.Models;
 using ProjektGrupowyGis.DAL;
+using System.Net;
 
 namespace ProjektGrupowyGis.Controllers
 {
@@ -19,7 +20,8 @@ namespace ProjektGrupowyGis.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            List<Hotel> hotels = _hotelsSqlExecutor.GetHotels();
+            return View(hotels);
         }
 
         public ActionResult EmptyHotelsDB()
@@ -33,6 +35,18 @@ namespace ProjektGrupowyGis.Controllers
             _hotelsSqlExecutor.AddHotel(hotel);
             var response = new { response = "ok" };
             return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Edit(int idHotel) {
+            Hotel hotel = _hotelsSqlExecutor.FindHotelById(idHotel);
+            return View(hotel);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Hotel hotel)
+        {
+            _hotelsSqlExecutor.EditHotel(hotel.Id_Hotel, hotel.Name, hotel.FullAddress, hotel.Webpage, hotel.Phone, hotel.Lat, hotel.Lng);
+            return RedirectToAction("Index");
         }
     }
 }

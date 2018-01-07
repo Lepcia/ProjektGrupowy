@@ -146,7 +146,7 @@ function prepareData(results, status) {
                                 name: place.name,
                                 fullAddress: place.vicinity,
                                 webpage: place.website,
-                                rating: place.rating,
+                                rate: place.rating,
                                 lat: place.geometry.location.lat(),
                                 lng: place.geometry.location.lng(),
                                 street_Num: place.address_components[0] != null ? place.address_components[0].long_name : null,
