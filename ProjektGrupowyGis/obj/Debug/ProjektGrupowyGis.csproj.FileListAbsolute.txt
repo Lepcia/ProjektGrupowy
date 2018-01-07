@@ -297,3 +297,4 @@ C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\Proje
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csproj.CoreCompileInputs.cache
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.dll
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.pdb
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\GridMvc.dll

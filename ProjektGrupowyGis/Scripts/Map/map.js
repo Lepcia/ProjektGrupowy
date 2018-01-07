@@ -9,7 +9,6 @@ var myPos;
 var myPosMarker;
 var infoWindow;
 var tempIndex;
-var addHotels = false;
 
 
 function initialize() {
@@ -100,7 +99,10 @@ function checkIfHotelsInDB() {
             dataType: "json",
             data: null,
             success: function (result) {
-                saveHotelsInDB();
+                console.log(result);
+                if (result.response == 0) {
+                    saveHotelsInDB();
+                }
             }
         });
     }
@@ -108,7 +110,7 @@ function checkIfHotelsInDB() {
 }
 
 function saveHotelsInDB() {
-    var radius = 20000;
+    var radius = 70000;
     var service = new google.maps.places.PlacesService(map);
     
     var searchPoint;
@@ -123,14 +125,6 @@ function saveHotelsInDB() {
         rankBy: google.maps.places.RankBy.DISTANCE,
         type: 'lodging'
     }, prepareData);
-}
-
-function chceckIfHotelsEmpty(response) {
-    if (response != null) {
-        for (var i = 0; i < response.length; i++) {
-            addHotels = response[i].response;
-        }
-    }
 }
 
 function prepareData(results, status) {
@@ -148,14 +142,14 @@ function prepareData(results, status) {
                     }, function (place, status) {
                         if (status === google.maps.places.PlacesServiceStatus.OK) {
                             var hotel = {
-                                IdHotel: place.place_id,
+                                place_Id: place.place_id,
                                 name: place.name,
                                 fullAddress: place.vicinity,
                                 webpage: place.website,
                                 rating: place.rating,
                                 lat: place.geometry.location.lat(),
                                 lng: place.geometry.location.lng(),
-                                streetNum: place.address_components[0] != null ? place.address_components[0].long_name : null,
+                                street_Num: place.address_components[0] != null ? place.address_components[0].long_name : null,
                                 street: place.address_components[1] != null ? place.address_components[1].long_name : null,
                                 city: place.address_components[2] != null ? place.address_components[2].long_name : null,
                                 country: place.address_components[5] != null ? place.address_components[5].long_name : null,
@@ -185,6 +179,35 @@ function searchLocations() {
     //var locationType = document.getElementById("idSelectPlace").value;
     var radius = document.getElementById("idSelectRadius").value;
     loadPlaces(radius, 'lodging');
+}
+
+function searchLocationsDB() {
+    var radius = document.getElementById("idSelectRadius").value;
+    clearMarkers();
+    clearRoute();
+    var searchPoint;
+
+    if (myPos != null) searchPoint = myPos;
+    else searchPoint = map.getCenter();
+
+    $.ajax({
+        url: "/Map/GetHotelsByRadius",
+        type: "GET",
+        dataType: "json",
+        data: {
+            radius: radius,
+            lat: myPos.lat,
+            lng: myPos.lng
+        },
+        success: function (result) {
+            console.log(result);
+            tempIndex = 1;
+            for (var i = 0; i < result.length; i++) {
+                createMarkerDB(result[i]);
+                addPlaceToTableDB(result[i]);
+            }
+        }
+    });
 }
 
 //Find my current Location
@@ -245,7 +268,6 @@ function loadPlaces(radius, type) {
     else
         searchPoint = map.getCenter();
 
-
     service.radarSearch({
         location: searchPoint,
         radius: radius,
@@ -265,6 +287,7 @@ function callback(results, status) {
                     placeId: results[i].place_id
                 }, function (place, status) {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        console.log("Place location", place.geometry.location);
                         createMarker(place);
                         addPlaceToTable(place);
                     }
@@ -273,6 +296,33 @@ function callback(results, status) {
             } catch (e) { }
         }
     }
+}
+
+function addPlaceToTableDB(place) {
+    console.log("Places", place);
+    //var lng = place.geometry.location;
+    var list = document.getElementById("places-list");
+    var row = document.createElement('tr');
+    row.setAttribute("onClick", "makeRouteLatLng" + new google.maps.LatLng(place.Lat, place.Lng) + ";");
+
+    var col1 = document.createElement('th');
+    var col2 = document.createElement('td');
+    var col3 = document.createElement('td');
+
+    var textCol1 = document.createTextNode(tempIndex);
+    var textCol2 = document.createTextNode(place.Name);
+    var textCol3 = document.createTextNode(place.FullAddress);
+
+    col1.appendChild(textCol1);
+    col2.appendChild(textCol2);
+    col3.appendChild(textCol3);
+
+    row.appendChild(col1);
+    row.appendChild(col2);
+    row.appendChild(col3);
+
+    list.appendChild(row);
+    tempIndex++;
 }
 
 function addPlaceToTable(place) {

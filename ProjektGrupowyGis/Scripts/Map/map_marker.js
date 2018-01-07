@@ -21,6 +21,60 @@ function createMarker(place) {
     allMarkers.push(marker);
 }
 
+function createMarkerDB(place) {
+    console.log("Create marker");
+    var markPos = new google.maps.LatLng(place.Lat, place.Lng)
+    var marker = new google.maps.Marker({
+        map: map,
+        position: markPos,
+        clickable: true
+    });
+
+    var content = createMarkerContentDB(place);
+
+    marker.info = new google.maps.InfoWindow({
+        content: content,
+        maxHeight: 200,
+
+    });
+    google.maps.event.addListener(marker, 'click', function () {
+        marker.info.open(map, marker);
+    });
+    allMarkers.push(marker);
+}
+
+function createMarkerContentDB(place) {
+    var hostnameRegexp = new RegExp('^https?://.+?/');
+    var content = '<div class="scrollFix"><b><a href="' + place.Webpage +
+        '"><br>' + place.Name + '</a></b><br>' + place.FullAddress;
+
+    if (place.Phone) {
+        content += "<br>" + place.Phone;
+    }
+    if (place.Rating) {
+        var ratingHtml = '';
+        for (var i = 0; i < 5; i++) {
+            if (place.Rating < (i + 0.5)) {
+                ratingHtml += '&#10025;';
+            } else {
+                ratingHtml += '&#10029;';
+            }
+        }
+        content += "<br>" + ratingHtml;
+    }
+    if (place.Website) {
+        var fullUrl = place.Qebsite;
+        var website = hostnameRegexp.exec(place.Website);
+        if (website === null) {
+            website = 'http://' + place.Website + '/';
+            fullUrl = website;
+        }
+        content += "<br><a href='" + website + "'>" + website + "</a>";
+    }
+    content += "</div>";
+    return content;
+}
+
 function createMarkerContent(place) {
     var hostnameRegexp = new RegExp('^https?://.+?/');
     var content = '<div class="scrollFix"><img class="hotelIcon" ' +

@@ -24,15 +24,23 @@ namespace ProjektGrupowyGis.DAL
 
         public void AddHotel(Hotel hotel)
         {
-            var sqlQuery = $"INSERT INTO HOTELS (PLACE_ID, NAME, FULLADDRESS, WEBPAGE, LATITUDE, LONTITUDE, GOOGLE_RATE, STREET_NUM, STREET, COUNTRY, POSTCODE, PHONE) " +
-                           $"VALUES(@IdHotel, @Name, @FullAddress, @Webpage, @Lat, @Lng, @Rating," +
-                           $"@StreetNum, @Street, @Country, @PostCode, @Phone); SELECT CAST(SCOPE_IDENTITY() as int) ";
+            var sqlQuery = $"INSERT INTO HOTELS (PLACE_ID, NAME, FULLADDRESS, WEBPAGE, LAT, LNG, GOOGLE_RATE, STREET_NUM, STREET, COUNTRY, CITY, POSTCODE, PHONE) " +
+                           $"VALUES(@Place_Id, @Name, @FullAddress, @Webpage, REPLACE(@Lat, ',', '.'), REPLACE(@Lng, ',', '.'), @Rating," +
+                           $"@Street_Num, @Street, @Country, @City, @PostCode, @Phone); SELECT CAST(SCOPE_IDENTITY() as int) ";
             int id = db.Query<int>(sqlQuery, hotel).SingleOrDefault();
         }
 
         public List<Hotel> GetHotels()
         {
             var sqlQuery = $"SELECT * FROM HOTELS";
+            List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
+            return hotels;
+        }
+
+        public List<Hotel> GetHotelsByRadius(int radius, string lat, string lng)
+        {
+            var sqlQuery = $"DECLARE @SOURCE GEOGRAPHY = 'POINT({lat} {lng})'; DECLARE @radius int = '{radius}'" +
+                           "SELECT * FROM HOTELS WHERE @SOURCE.STDistance('POINT(' + CONVERT(NVARCHAR(50), LAT) + ' ' + CONVERT(NVARCHAR(50),LNG) + ')') <= @radius";
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
         }
