@@ -32,7 +32,14 @@ namespace ProjektGrupowyGis.DAL
 
         public List<Hotel> GetHotels()
         {
-            var sqlQuery = $"SELECT * FROM HOTELS";
+            var sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(HOTEL_RATES.RATE), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE FROM HOTELS";
+            List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
+            return hotels;
+        }
+
+        public List<Hotel> GetHotelsWithUserRate(int idUser) {
+            var sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(HOTEL_RATES.RATE), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
+                "(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE FROM HOTELS";
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
         }
@@ -46,7 +53,7 @@ namespace ProjektGrupowyGis.DAL
         }
 
         public Hotel FindHotelById(int id) {
-            var sqlQuery = $"SELECT * FROM HOTELS WHERE ID_HOTEL = '{id}'";
+            var sqlQuery = $"SELECT *,  (SELECT AVG(HOTEL_RATES.RATE) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE FROM HOTELS WHERE ID_HOTEL = '{id}'";
             Hotel hotel = db.Query<Hotel>(sqlQuery).SingleOrDefault();
             return hotel;
         }
@@ -56,6 +63,14 @@ namespace ProjektGrupowyGis.DAL
             var sqlQuery = $"UPDATE HOTELS SET NAME = '{name}', FULLADDRESS = '{fulladdress}', WEBPAGE = '{webpage}', PHONE = '{phone}', LAT = '{lat}', LNG = '{lng}' WHERE ID_HOTEL = '{idHotel}';"+
                 "SELECT * FROM HOTELS WHERE ID_HOTEL = " + idHotel;
             Hotel hotel = db.Query<Hotel>(sqlQuery).SingleOrDefault();
+        }
+
+        public void RateHotel(string login, int idHotel, int rate)
+        {
+            var sqlQuery = $"DECLARE @count int, @id_user int; SELECT @id_user = ID_USER FROM USERS WHERE LOGIN = '{login}'; SELECT @count = COUNT(*) FROM HOTEL_RATES WHERE ID_USER = @id_user AND ID_HOTEL = '{idHotel}';" +
+                "IF @COUNT > 0 BEGIN UPDATE HOTEL_RATES SET RATE = " + rate + " WHERE ID_USER = @id_user AND ID_HOTEL = " + idHotel + " END ELSE BEGIN INSERT INTO HOTEL_RATES (ID_USER, ID_HOTEL, RATE) " +
+                "VALUES(@id_user, " + idHotel + ", " + rate + "); END";
+            db.Query(sqlQuery); 
         }
     }
 }

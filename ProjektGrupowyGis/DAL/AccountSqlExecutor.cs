@@ -37,6 +37,12 @@ namespace ProjektGrupowyGis.DAL
 
             return id;
         }
+
+        public int GetUserId(string login) {
+            var sqlQuery = $"SELECT ID_USER FROM USERS WHERE LOGIN = '{login}'";
+            var id = db.Query<int>(sqlQuery).SingleOrDefault();
+            return id;
+        }
         
     }
 }

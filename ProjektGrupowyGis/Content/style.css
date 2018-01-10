@@ -64,3 +64,53 @@ textarea {
     overflow: hidden;
     white-space: nowrap;
 }
+
+.commentBox {
+    background-color:#efefef;
+    padding:10px;
+    border-radius:10px;
+}
+
+button[class*="star"] {
+    min-width:32px;
+    min-height:30px;
+    display:inline-block;
+    cursor:pointer;
+    background-color: transparent;
+}
+
+.starOutline{
+    background-image:url("Images/star-outline.png");
+    
+}
+
+.starYellow{
+    background-image:url("Images/star-yellow.png");
+}
+
+.starHalf{
+    background-image:url("Images/star-half.png");
+}
+
+button.clearButton:hover,
+button.clearButton:focus,
+button.clearButton:active ,
+button.clearButton {
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    outline: none;
+}
+
+.rating {
+    display: inline-block;
+    width: 180px;
+}
+
+.hidden-item {
+    display: none;
+}
+
+visible-item {
+    display: inherit;
+}

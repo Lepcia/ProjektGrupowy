@@ -25,6 +25,8 @@ namespace ProjektGrupowyGis.Models
         public string Country { get; set; }
         public string PostCode { get; set; }
         public string Phone { get; set; }
+        public int Avg_Rate { get; set; } = 0;
+        public int User_Rate { get; set; } = 0;
     }
 
     public class SearchByRadius
@@ -33,4 +35,13 @@ namespace ProjektGrupowyGis.Models
         public string Lat { get; set; }
         public string Lng { get; set; }
     }
+
+    public class HotelsModel
+    {
+        public List<Hotel> Hotels { get; set; }
+        public bool CanRate { get; set; } = false;
+        public bool CanEdit { get; set; } = false;
+
+    }
+
 }
