@@ -206,6 +206,7 @@ function searchLocationsDB() {
                 createMarkerDB(result[i]);
                 addPlaceToTableDB(result[i]);
             }
+            showPlacesList();
         }
     });
 }
