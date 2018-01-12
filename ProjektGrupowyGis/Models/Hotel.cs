@@ -25,8 +25,10 @@ namespace ProjektGrupowyGis.Models
         public string Country { get; set; }
         public string PostCode { get; set; }
         public string Phone { get; set; }
-        public int Avg_Rate { get; set; } = 0;
+        [DisplayFormat(DataFormatString ="{0:0.#}")]
+        public float Avg_Rate { get; set; } = 0;
         public int User_Rate { get; set; } = 0;
+        public int RatesCount { get; set; } = 0;
     }
 
     public class SearchByRadius
@@ -39,9 +41,22 @@ namespace ProjektGrupowyGis.Models
     public class HotelsModel
     {
         public List<Hotel> Hotels { get; set; }
+        public HotelsSearch Search { get; set; }
         public bool CanRate { get; set; } = false;
         public bool CanEdit { get; set; } = false;
 
+    }
+
+    public class HotelsSearch
+    {
+        public string nameSearch { get; set; }
+        public string addressSearch { get; set; }
+        public string googleRateFrom { get; set; }
+        public string googleRateTo { get; set; }
+        public string usersRateFrom { get; set; }
+        public string usersRateTo { get; set; }
+        public string yourRateFrom { get; set; }
+        public string yourRateTo { get; set; }
     }
 
 }

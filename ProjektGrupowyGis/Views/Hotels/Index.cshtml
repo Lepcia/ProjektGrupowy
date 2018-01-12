@@ -93,66 +93,86 @@
 
 <h2>Hotels List</h2>
 
-<div class="panel panel-default" onload="onLoad()">
-    <table class="table table-striped table-bordered table-responsive table-condensed table-hover">
-        <thead>
-            <tr>
-                <th class="col-md-2">Name</th>
-                <th class="col-md-2">Address</th>
-                <th class="col-md-2">Phone number</th>
-                <th class="col-md-3">Website</th>
-                <th class="col-md-1">Google rate</th>
-
-                @if (Model.CanRate)
-                {
-                <th>Your rate</th>
-                }
-                @if (Model.CanEdit)
-                {
-                <th></th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var h in Model.Hotels)
+<div style="margin-bottom:20px;">
+    @using (Html.BeginForm("Index", "Hotels", FormMethod.Get))
+    {
+        <div class="form-inline">
+            <div class="form-row" style="margin-bottom: 15px">
+                Name: @Html.TextBoxFor(s => s.Search.nameSearch, new { @class = "form-control" })
+                Address: @Html.TextBoxFor(s => s.Search.addressSearch, new { @class = "form-control" })
+                Users rate: @Html.TextBoxFor(s => s.Search.usersRateFrom, new { @type = "number", @step = "0.1", @min = "0", @max = "5", @class = "form-control", @style = "width: 70px;" })
+                to: @Html.TextBoxFor(s => s.Search.usersRateTo, new { @type = "number", @step = "0.1", @min = "0", @max = "5", @class = "form-control", @style = "width: 70px;" })
+            @if (Model.CanRate)
             {
-            <tr>
-                <td class="col-md-2">
-                    @h.Name @h.Id_Hotel
-                </td>
-                <td class="col-md-2">
-                    @h.FullAddress
-                </td>
-                <td class="col-md-2">
-                    @h.Phone
-                </td>
-                <td class="col-md-2">
-                    <a href="@h.Webpage">@h.Webpage</a>
-                </td>
-                <td class="col-md-1">
-                    @h.Google_Rate
-                </td>
+                <text>
+                    Your rate: @Html.TextBoxFor(s => s.Search.yourRateFrom, new { @type = "number", @step = "0.1", @min = "0", @max = "5", @class = "form-control", @style = "width: 70px;" })
+                    to: @Html.TextBoxFor(s => s.Search.yourRateTo, new { @type = "number", @step = "0.1", @min = "0", @max = "5", @class = "form-control", @style = "width: 70px;" })
+                </text>
+            }
+            <input type="submit" style="float: right; margin-bottom:20px;" class="btn btn-primary" value="Filter" />
+            </div>
+        </div>
+    }
+</div>
+    <div class="container" onload="onLoad()">
+        <table class="table table-striped table-bordered table-responsive table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="col-md-2">Name</th>
+                    <th class="col-md-2">Address</th>
+                    <th class="col-md-2">Phone number</th>
+                    <th class="col-md-2">Website</th>
+                    <th class="col-md-1">Users rate</th>
+                    @if (Model.CanRate)
+                    {
+                        <th class="col-md-1">Your rate</th>
+                    }
+                    @if (Model.CanEdit)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var h in Model.Hotels)
+            {
+                    <tr>
+                        <td class="col-md-2">
+                            @h.Name @h.Id_Hotel
+                        </td>
+                        <td class="col-md-2">
+                            @h.FullAddress
+                        </td>
+                        <td class="col-md-2">
+                            @h.Phone
+                        </td>
+                        <td class="col-md-2">
+                            <a href="@h.Webpage">@h.Webpage</a>
+                        </td>
+                        <td class="col-md-1">
+                            @h.Avg_Rate.ToString("0.#") <br /><i style="font-size:small">Quantity: @h.RatesCount</i> 
+                        </td>
                 @if (Model.CanRate)
                 {
-                <td>
-                    <div id="@h.Id_Hotel-rating-@h.User_Rate" class="rating">
-                        <button id="@h.Id_Hotel-star-1" class="starOutline clearButton" value="1" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
-                        <button id="@h.Id_Hotel-star-2" class="starOutline clearButton" value="2" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
-                        <button id="@h.Id_Hotel-star-3" class="starOutline clearButton" value="3" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
-                        <button id="@h.Id_Hotel-star-4" class="starOutline clearButton" value="4" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
-                        <button id="@h.Id_Hotel-star-5" class="starOutline clearButton" value="5" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
-                    </div>
-                </td>
+                    <td>
+                        <div id="@h.Id_Hotel-rating-@h.User_Rate" class="rating">
+                            <button id="@h.Id_Hotel-star-1" class="starOutline clearButton" value="1" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
+                            <button id="@h.Id_Hotel-star-2" class="starOutline clearButton" value="2" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
+                            <button id="@h.Id_Hotel-star-3" class="starOutline clearButton" value="3" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
+                            <button id="@h.Id_Hotel-star-4" class="starOutline clearButton" value="4" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
+                            <button id="@h.Id_Hotel-star-5" class="starOutline clearButton" value="5" onmouseout="setRate(this, @h.User_Rate)" onmouseover="rateHover(this)" onclick="rateClick(this)"></button>
+                        </div>
+                    </td>
                 }
                 @if (Model.CanEdit)
                 {
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { idHotel = h.Id_Hotel })
-                </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { idHotel = h.Id_Hotel })
+                    </td>
                 }
             </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                }
+            </tbody>
+        </table>
+    </div>
 

@@ -21,25 +21,18 @@ namespace ProjektGrupowyGis.Controllers
             _accountSqlExecutor = new AccountSqlExecutor();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(HotelsSearch search)
         {
-            List<Hotel> hotels;
+            bool canRate = User.Identity.IsAuthenticated;
             var user = HttpContext.User.Identity;
+            var idUser = _accountSqlExecutor.GetUserId(user.Name);
             var canEdit = false;
-            var canRate = false;
-            if (user.IsAuthenticated)
+            if (user.Name == "Admin")
             {
-                var userID = _accountSqlExecutor.GetUserId(user.Name);
-                hotels = _hotelsSqlExecutor.GetHotelsWithUserRate(userID);
-                canRate = true;
-            }
-            else {
-                hotels = _hotelsSqlExecutor.GetHotels();
-            }
-            if (user.Name == "Admin") {
                 canEdit = true;
             }
-            HotelsModel model = new HotelsModel { Hotels = hotels, CanEdit = canEdit, CanRate = canRate };
+            var hotels = _hotelsSqlExecutor.FilterHotels(search, canRate, idUser);
+            HotelsModel model = new HotelsModel { Hotels = hotels, CanEdit = canEdit, CanRate = canRate, Search = new HotelsSearch() };
             return View(model);
         }
 
