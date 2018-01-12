@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using PagedList;
 
 namespace ProjektGrupowyGis.Models
 {
@@ -40,10 +41,11 @@ namespace ProjektGrupowyGis.Models
 
     public class HotelsModel
     {
-        public List<Hotel> Hotels { get; set; }
+        public IPagedList<Hotel> Hotels { get; set; }
         public HotelsSearch Search { get; set; }
         public bool CanRate { get; set; } = false;
         public bool CanEdit { get; set; } = false;
+        public int? page { get; set; }
 
     }
 

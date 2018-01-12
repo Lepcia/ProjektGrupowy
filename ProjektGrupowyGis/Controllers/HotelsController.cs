@@ -7,6 +7,7 @@ using ProjektGrupowyGis.Models;
 using ProjektGrupowyGis.DAL;
 using System.Net;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace ProjektGrupowyGis.Controllers
 {
@@ -21,8 +22,26 @@ namespace ProjektGrupowyGis.Controllers
             _accountSqlExecutor = new AccountSqlExecutor();
         }
 
-        public ActionResult Index(HotelsSearch search)
+        public ActionResult Index(HotelsSearch search, string name, string address, string userRateFrom, string userRateTo, string yourRateFrom, string yourRateTo, int? page)
         {
+            ViewBag.CurrentSearch = new HotelsSearch();
+            ViewBag.Empty = null;
+            if (search != null)
+            {
+                page = 1;
+                ViewBag.CurrentSearch = search;
+            }
+            else {
+                ViewBag.CurrentSearch.nameSearch = name;
+                ViewBag.CurrentSearch.addressSearch = address;
+                ViewBag.CurrentSearch.usersRateFrom = userRateFrom;
+                ViewBag.CurrentSearch.usersRateTo = userRateTo;
+                ViewBag.CurrentSearch.yourRateFrom = yourRateFrom;
+                ViewBag.CurrentSearch.yourRateTo = yourRateTo;
+                search = ViewBag.CurrentSearch;
+            }
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
             bool canRate = User.Identity.IsAuthenticated;
             var user = HttpContext.User.Identity;
             var idUser = _accountSqlExecutor.GetUserId(user.Name);
@@ -32,7 +51,7 @@ namespace ProjektGrupowyGis.Controllers
                 canEdit = true;
             }
             var hotels = _hotelsSqlExecutor.FilterHotels(search, canRate, idUser);
-            HotelsModel model = new HotelsModel { Hotels = hotels, CanEdit = canEdit, CanRate = canRate, Search = new HotelsSearch() };
+            HotelsModel model = new HotelsModel { Hotels = hotels.ToPagedList<Hotel>(pageNumber, pageSize), CanEdit = canEdit, CanRate = canRate, Search = search };
             return View(model);
         }
 

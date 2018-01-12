@@ -298,3 +298,7 @@ C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\Proje
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.dll
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.pdb
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\GridMvc.dll
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.dll
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.dll
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.xml
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.xml

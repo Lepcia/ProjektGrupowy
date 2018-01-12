@@ -1,7 +1,7 @@
 ﻿@model HotelsModel
 ﻿@using Microsoft.AspNet.Identity
 @using ProjektGrupowyGis.Models
-@using GridMvc.Html
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
 }
@@ -174,5 +174,9 @@
                 }
             </tbody>
         </table>
+        Page @(Model.Hotels.PageCount < Model.Hotels.PageNumber ? 0 : Model.Hotels.PageNumber) of @Model.Hotels.PageCount
+        @Html.PagedListPager(Model.Hotels, page => Url.Action("Index", new { page = page, search = ViewBag.CurrentSearch, name = ViewBag.CurrentSearch.nameSearch, address = ViewBag.CurrentSearch.addressSearch, userRateFrom =  ViewBag.CurrentSearch.usersRateFrom, userRateTo = ViewBag.CurrentSearch.usersRateTo,
+        yourRateFrom = ViewBag.CurrentSearch.yourRateFrom, yourRateTo = ViewBag.CurrentSearch.yourRateTo 
+        }))
     </div>
 
