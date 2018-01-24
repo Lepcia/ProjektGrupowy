@@ -25,7 +25,7 @@ namespace ProjektGrupowyGis.DAL
         public void AddHotel(Hotel hotel)
         {
             var sqlQuery = $"INSERT INTO HOTELS (PLACE_ID, NAME, FULLADDRESS, WEBPAGE, LAT, LNG, GOOGLE_RATE, STREET_NUM, STREET, COUNTRY, CITY, POSTCODE, PHONE) " +
-                           $"VALUES(@Place_Id, @Name, @FullAddress, @Webpage, REPLACE(@Lat, ',', '.'), REPLACE(@Lng, ',', '.'), @Rating," +
+                           $"VALUES(@Place_Id, @Name, @FullAddress, SUBSTRING(@Webpage, 0, CHARINDEX('/', @Webpage, 8) + 1), REPLACE(@Lat, ',', '.'), REPLACE(@Lng, ',', '.'), @Google_Rate," +
                            $"@Street_Num, @Street, @Country, @City, @PostCode, @Phone); SELECT CAST(SCOPE_IDENTITY() as int) ";
             int id = db.Query<int>(sqlQuery, hotel).SingleOrDefault();
         }
