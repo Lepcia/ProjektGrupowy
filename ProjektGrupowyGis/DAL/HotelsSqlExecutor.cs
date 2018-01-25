@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Dapper;
 using ProjektGrupowyGis.Models;
+using System.Web.Mvc;
 
 namespace ProjektGrupowyGis.DAL
 {
@@ -30,6 +31,14 @@ namespace ProjektGrupowyGis.DAL
             int id = db.Query<int>(sqlQuery, hotel).SingleOrDefault();
         }
 
+        public void AddHotelApp(Hotel hotel)
+        {
+            var sqlQuery = $"INSERT INTO HOTELS (NAME, FULLADDRESS, WEBPAGE, LAT, LNG, PHONE) " +
+                          $"VALUES(@Name, @FullAddress, @Webpage, REPLACE(@Lat, ',', '.'), REPLACE(@Lng, ',', '.'), " + 
+                          $" @Phone); SELECT CAST(SCOPE_IDENTITY() as int) ";
+            int id = db.Query<int>(sqlQuery, hotel).SingleOrDefault();
+        }
+
         public List<Hotel> GetHotels()
         {
             var sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE FROM HOTELS";
@@ -39,7 +48,7 @@ namespace ProjektGrupowyGis.DAL
 
         public List<Hotel> GetHotelsWithUserRate(int idUser) {
             var sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
-                "(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS";
+               $"(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS";
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
         }
@@ -47,7 +56,7 @@ namespace ProjektGrupowyGis.DAL
         public List<Hotel> GetHotelsByRadius(int radius, string lat, string lng)
         {
             var sqlQuery = $"DECLARE @SOURCE GEOGRAPHY = 'POINT({lat} {lng})'; DECLARE @radius int = '{radius}'" +
-                           "SELECT * FROM HOTELS WHERE @SOURCE.STDistance('POINT(' + CONVERT(NVARCHAR(50), LAT) + ' ' + CONVERT(NVARCHAR(50),LNG) + ')') <= @radius";
+                           $"SELECT * FROM HOTELS WHERE @SOURCE.STDistance('POINT(' + CONVERT(NVARCHAR(50), LAT) + ' ' + CONVERT(NVARCHAR(50),LNG) + ')') <= @radius";
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
         }
@@ -61,15 +70,15 @@ namespace ProjektGrupowyGis.DAL
         public void EditHotel(string idHotel, string name, string fulladdress, string webpage, string phone, string lat, string lng)
         {
             var sqlQuery = $"UPDATE HOTELS SET NAME = '{name}', FULLADDRESS = '{fulladdress}', WEBPAGE = '{webpage}', PHONE = '{phone}', LAT = '{lat}', LNG = '{lng}' WHERE ID_HOTEL = '{idHotel}';"+
-                "SELECT * FROM HOTELS WHERE ID_HOTEL = " + idHotel;
+                $"SELECT * FROM HOTELS WHERE ID_HOTEL = " + idHotel;
             Hotel hotel = db.Query<Hotel>(sqlQuery).SingleOrDefault();
         }
 
         public void RateHotel(string login, int idHotel, int rate)
         {
             var sqlQuery = $"DECLARE @count int, @id_user int; SELECT @id_user = ID_USER FROM USERS WHERE LOGIN = '{login}'; SELECT @count = COUNT(*) FROM HOTEL_RATES WHERE ID_USER = @id_user AND ID_HOTEL = '{idHotel}';" +
-                "IF @COUNT > 0 BEGIN UPDATE HOTEL_RATES SET RATE = " + rate + " WHERE ID_USER = @id_user AND ID_HOTEL = " + idHotel + " END ELSE BEGIN INSERT INTO HOTEL_RATES (ID_USER, ID_HOTEL, RATE) " +
-                "VALUES(@id_user, " + idHotel + ", " + rate + "); END";
+                $"IF @COUNT > 0 BEGIN UPDATE HOTEL_RATES SET RATE = " + rate + " WHERE ID_USER = @id_user AND ID_HOTEL = " + idHotel + " END ELSE BEGIN INSERT INTO HOTEL_RATES (ID_USER, ID_HOTEL, RATE) " +
+                $"VALUES(@id_user, " + idHotel + ", " + rate + "); END";
             db.Query(sqlQuery); 
         }
 
@@ -85,17 +94,24 @@ namespace ProjektGrupowyGis.DAL
                 search.yourRateFrom = string.IsNullOrEmpty(search.yourRateFrom) ? "0" : search.yourRateFrom;
                 search.yourRateTo = string.IsNullOrEmpty(search.yourRateTo) ? "5" : search.yourRateTo;
                 sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
-                "(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " + 
-                "WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
-                "AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " " +
-                "AND  (select coalesce(AVG(rate), 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) BETWEEN " + search.yourRateFrom + " AND " + search.yourRateTo + " ";
+                $"(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " + 
+                $"WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
+                $"AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " " +
+                $"AND  (select coalesce(AVG(rate), 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) BETWEEN " + search.yourRateFrom + " AND " + search.yourRateTo + " ";
             }
             else {
                 sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " +
-                "WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
-                "AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " ";
+                $"WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
+                $"AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " ";
             }
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
+            return hotels;
+        }
+
+        public IEnumerable<SelectListItem> GetHotelsForSelect()
+        {
+            var sqlQuery = $"SELECT ID_HOTEL AS Value, NAME as Text FROM HOTELS ORDER BY NAME";
+            IEnumerable<SelectListItem> hotels = db.Query<SelectListItem>(sqlQuery).AsEnumerable();
             return hotels;
         }
     }

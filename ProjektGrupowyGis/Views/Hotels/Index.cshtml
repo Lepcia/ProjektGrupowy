@@ -129,7 +129,7 @@
                     }
                     @if (Model.CanEdit)
                     {
-                        <th></th>
+                        <th class="pl-4">@Html.ActionLink(" ", "Create", null, new { @class = "glyphicon glyphicon-plus" })</th>
                     }
                 </tr>
             </thead>
@@ -138,7 +138,7 @@
             {
                     <tr>
                         <td class="col-md-2">
-                            @h.Name @h.Id_Hotel
+                            @h.Name
                         </td>
                         <td class="col-md-2">
                             @h.FullAddress

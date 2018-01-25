@@ -191,13 +191,16 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HotelsController.cs" />
     <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Controllers\OffersController.cs" />
     <Compile Include="DAL\AccountSqlExecutor.cs" />
     <Compile Include="DAL\HotelsSqlExecutor.cs" />
+    <Compile Include="DAL\OffersSqlExecutor.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Hotel.cs" />
+    <Compile Include="Models\Offer.cs" />
     <Compile Include="Models\Rate.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -269,6 +272,10 @@
     <Content Include="Views\Shared\_GridPager.cshtml" />
     <Content Include="Views\Shared\_Grid.cshtml" />
     <Content Include="Views\Hotels\Edit.cshtml" />
+    <Content Include="Views\Offers\Edit.cshtml" />
+    <Content Include="Views\Offers\Index.cshtml" />
+    <Content Include="Views\Offers\Create.cshtml" />
+    <Content Include="Views\Hotels\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

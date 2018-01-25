@@ -61,4 +61,10 @@ namespace ProjektGrupowyGis.Models
         public string yourRateTo { get; set; }
     }
 
+    public class HotelSelect
+    {
+        public string ID_HOTEL { get; set; }
+        public string NAME { get; set; }
+    }
+
 }

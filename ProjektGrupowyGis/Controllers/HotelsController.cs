@@ -78,13 +78,34 @@ namespace ProjektGrupowyGis.Controllers
             else return View();
         }
 
+        public ActionResult Create()
+        {
+            if (User.Identity.Name == "Admin")
+            {
+                Hotel hotel = new Hotel();
+                return View(hotel);
+            }
+            else return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Create(Hotel hotel)
+        {
+            if (User.Identity.Name == "Admin")
+            {
+                _hotelsSqlExecutor.AddHotelApp(hotel);
+                return RedirectToAction("Index");
+            }
+            else return RedirectToAction("Index");
+        }
+
         public ActionResult Edit(int idHotel) {
             if (User.Identity.Name == "Admin")
             {
                 Hotel hotel = _hotelsSqlExecutor.FindHotelById(idHotel);
                 return View(hotel);
             }
-            else return View();
+            else return RedirectToAction("Index");
         }
 
         [HttpPost]

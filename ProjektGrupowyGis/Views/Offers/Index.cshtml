@@ -1,0 +1,99 @@
+﻿@model OffersModel
+@using Microsoft.AspNet.Identity
+@using ProjektGrupowyGis.Models
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="@Url.Content("~/Content/style.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+
+<h2>View</h2>
+
+<div style="margin-bottom:20px;">
+    @using (Html.BeginForm("Index", "Offers", FormMethod.Get))
+    {
+        <div class="form-inline">
+            <div class="form-row" style="margin-bottom: 15px">
+                Name: @Html.TextBoxFor(s => s.Search.nameSearch, new { @class = "form-control" })
+                Description: @Html.TextBoxFor(s => s.Search.descriptionSearch, new { @class = "form-control" })
+                Date from: @Html.TextBoxFor(s => s.Search.dateFrom , new { @type = "date", @class = "form-control", @style = "width: 150px;" })
+                to: @Html.TextBoxFor(s => s.Search.dateTo, new { @type = "date", @class = "form-control", @style = "width: 150px;" })
+            </div>
+            <div class="form-row" style="margin-bottom: 15px;">
+                People from: @Html.TextBoxFor(s => s.Search.peopleFrom, new { @type = "number", @min = "1", @max = "6", @class = "form-control", @style = "width: 70px;" })
+                to: @Html.TextBoxFor(s => s.Search.peopleTo, new { @type = "number", @min = "1", @max = "6", @class = "form-control", @style = "width: 70px;" })
+                Price from: @Html.TextBoxFor(s => s.Search.priceFrom, new { @type = "number", @step = "0.1", @class = "form-control", @style = "width: 100px;" })
+                to: @Html.TextBoxFor(s => s.Search.priceTo, new { @type = "number", @step = "0.1", @class = "form-control", @style = "width: 100px;" })
+                <input type="submit" style="float: right; margin-bottom:20px;" class="btn btn-primary" value="Filter" />
+            </div>
+        </div>
+    }
+</div>
+<div class="container" onload="onLoad()">
+    <table class="table table-striped table-bordered table-responsive table-condensed table-hover">
+        <thead>
+            <tr>
+                <th class="col-md-2">Offer name</th>
+                <th class="col-md-2">Hotel Name</th>
+                <th class="col-md-2">Description</th>
+                <th class="col-md-2">Date</th>
+                <th class="col-md-1">Room for</th>
+                <th class="col-md-1">Price</th>
+                @if (Model.CanEdit)
+                {
+                    <th class="pl-4">@Html.ActionLink(" ", "Create", null, new { @class= "glyphicon glyphicon-plus" })</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model.Offers)
+            {
+                <tr>
+                    <td class="col-md-2">
+                        @o.NAME
+                    </td>
+                    <td class="col-md-2">
+                        @o.HOTEL_NAME
+                    </td>
+                    <td class="col-md-2">
+                        @o.DESCRIPTION
+                    </td>
+                    <td class="col-md-2">
+                        @o.DATE_START.ToString("yyyy-MM-dd") - @o.DATE_END.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="col-md-1">
+                        @o.PEOPLE_FROM - @o.PEOPLE_TO
+                    </td>
+                    <td class="col-md-1">
+                        @o.PRICE
+                    </td>
+                    @if (Model.CanEdit)
+                    {
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { idOffer = o.ID_OFFER })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    Page @(Model.Offers.PageCount < Model.Offers.PageNumber ? 0 : Model.Offers.PageNumber) of @Model.Offers.PageCount
+    @Html.PagedListPager(Model.Offers, page => Url.Action("Index", new
+    {
+        page = page,
+        search = ViewBag.CurrentSearch,
+        name = ViewBag.CurrentSearch.nameSearch,
+        hotleName = ViewBag.CurrentSearch.hotelName,
+        description = ViewBag.CurrentSearch.descriptionSearch,
+        dateFrom = ViewBag.CurrentSearch.dateFrom,
+        dateTo = ViewBag.CurrentSearch.dateTo,
+        peopleFrom = ViewBag.CurrentSearch.peopleFrom,
+        peopleTo = ViewBag.CurrentSearch.peopleTo,
+        priceFrom = ViewBag.CurrentSearch.priceFrom,
+        priceTo = ViewBag.CurrentSearch.priceTo,
+    }))
+</div>
