@@ -22,7 +22,8 @@ namespace ProjektGrupowyGis.Controllers
             _accountSqlExecutor = new AccountSqlExecutor();
         }
 
-        public ActionResult Index(HotelsSearch search, string name, string address, string userRateFrom, string userRateTo, string yourRateFrom, string yourRateTo, int? page)
+        public ActionResult Index(HotelsSearch search, string name, string address, string userRateFrom, string userRateTo, 
+            string yourRateFrom, string yourRateTo, string distance, string lat, string lng, int? page)
         {
             ViewBag.CurrentSearch = new HotelsSearch();
             ViewBag.Empty = null;
@@ -30,6 +31,8 @@ namespace ProjektGrupowyGis.Controllers
             {
                 page = 1;
                 ViewBag.CurrentSearch = search;
+                search.lat = lat;
+                search.lng = lng;
             }
             else {
                 ViewBag.CurrentSearch.nameSearch = name;
@@ -38,6 +41,9 @@ namespace ProjektGrupowyGis.Controllers
                 ViewBag.CurrentSearch.usersRateTo = userRateTo;
                 ViewBag.CurrentSearch.yourRateFrom = yourRateFrom;
                 ViewBag.CurrentSearch.yourRateTo = yourRateTo;
+                ViewBag.CurrentSearch.distance = distance;
+                ViewBag.CurrentSearch.lat = lat;
+                ViewBag.CurrentSearch.lng = lng;
                 search = ViewBag.CurrentSearch;
             }
             int pageSize = 10;

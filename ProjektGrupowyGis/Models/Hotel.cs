@@ -59,6 +59,9 @@ namespace ProjektGrupowyGis.Models
         public string usersRateTo { get; set; }
         public string yourRateFrom { get; set; }
         public string yourRateTo { get; set; }
+        public string distance { get; set; }
+        public string lat { get; set; }
+        public string lng { get; set; }
     }
 
     public class HotelSelect

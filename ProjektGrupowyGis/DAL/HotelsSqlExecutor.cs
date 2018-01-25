@@ -89,20 +89,27 @@ namespace ProjektGrupowyGis.DAL
             search.googleRateTo = string.IsNullOrEmpty(search.googleRateTo) ? "5" : search.googleRateTo;
             search.usersRateFrom = string.IsNullOrEmpty(search.usersRateFrom) ? "0" : search.usersRateFrom;
             search.usersRateTo = string.IsNullOrEmpty(search.usersRateTo) ? "5" : search.usersRateTo;
+            search.distance = string.IsNullOrEmpty(search.distance) ? "1000000" : search.distance;
+            search.lat = string.IsNullOrEmpty(search.lat) ? "54.353556" : search.lat;
+            search.lng = string.IsNullOrEmpty(search.lng) ? "18.65836200000001" : search.lng;
             if (canRate)
             {
                 search.yourRateFrom = string.IsNullOrEmpty(search.yourRateFrom) ? "0" : search.yourRateFrom;
                 search.yourRateTo = string.IsNullOrEmpty(search.yourRateTo) ? "5" : search.yourRateTo;
-                sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
+                sqlQuery = $"DECLARE @SOURCE GEOGRAPHY = 'POINT(" + search.lat + " " +  search.lng +")'; DECLARE @radius int = " + search.distance  + "; " +
+                $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
                 $"(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " + 
                 $"WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
                 $"AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " " +
-                $"AND  (select coalesce(AVG(rate), 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) BETWEEN " + search.yourRateFrom + " AND " + search.yourRateTo + " ";
+                $"AND  (select coalesce(AVG(rate), 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) BETWEEN " + search.yourRateFrom + " AND " + search.yourRateTo + 
+                $" AND @SOURCE.STDistance('POINT(' + CONVERT(NVARCHAR(50), LAT) + ' ' + CONVERT(NVARCHAR(50),LNG) + ')') <= @radius";
             }
             else {
-                sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " +
+                sqlQuery = $"DECLARE @SOURCE GEOGRAPHY = 'POINT({search.lat} {search.lng})'; DECLARE @radius int = '{search.distance}'; " +
+                $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS " +
                 $"WHERE HOTELS.NAME LIKE '%" + search.nameSearch + "%' AND HOTELS.FULLADDRESS LIKE '%" + search.addressSearch + "%' AND HOTELS.GOOGLE_RATE BETWEEN " + search.googleRateFrom + " AND " + search.googleRateTo + " " +
-                $"AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + " ";
+                $"AND (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) BETWEEN " + search.usersRateFrom + " AND " + search.usersRateTo + 
+                $" AND @SOURCE.STDistance('POINT(' + CONVERT(NVARCHAR(50), LAT) + ' ' + CONVERT(NVARCHAR(50),LNG) + ')') <= @radius";
             }
             List<Hotel> hotels = db.Query<Hotel>(sqlQuery).ToList();
             return hotels;
