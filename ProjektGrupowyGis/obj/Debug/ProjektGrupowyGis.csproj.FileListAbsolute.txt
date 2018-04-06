@@ -302,3 +302,9 @@ C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.dl
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.dll
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.xml
 C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.xml
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\GridMvc.dll
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.dll
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.dll
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.xml
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.xml
+C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csproj.CopyComplete
