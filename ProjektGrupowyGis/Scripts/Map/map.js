@@ -1,4 +1,4 @@
-﻿var api_key = "AIzaSyAXADZtpBtC4Zdrhh40pYgAxIecba_0OLg";
+﻿var api_key = "AIzaSyCEfPWikLTAYVFrCm4L2-ZpD8sEvUgZGw8";
 var kmllayer = new google.maps.KmlLayer('http://maverick.eti.pg.gda.pl/KML/tt.kml');
 var map;
 var geocoder = new google.maps.Geocoder();
@@ -110,20 +110,21 @@ function checkIfHotelsInDB() {
 }
 
 function saveHotelsInDB() {
-    var positions = [{ lat: '54.3610063,18.', lng: '5499449,11' }, { lat: '54.4075387,18', lng: '5789537,14' }, { lat: '54.4259952,18', lng: '54.4259952,18' }, { lat: '54.4741738,18.', lng: '5312968,14' }
-        , { lat: '54.4976169,18', lng: '519623,13.01' }, { lat: '54.337119,18', lng: '5568243,17' }];
-    var radius = 5000;
+    var radius = 20000;
     var service = new google.maps.places.PlacesService(map);
-    for (var i = 0; i < positions.length; i++) {
-        var searchPoint = positions[i];
 
-        service.radarSearch({
-            location: searchPoint,
-            radius: radius,
-            rankBy: google.maps.places.RankBy.DISTANCE,
-            type: 'lodging'
-        }, prepareData);
-    }
+    var searchPoint;
+    if (myPos != null)
+        searchPoint = myPos;
+    else
+        searchPoint = map.getCenter();
+
+    service.radarSearch({
+        location: searchPoint,
+        radius: radius,
+        rankBy: google.maps.places.RankBy.DISTANCE,
+        type: 'lodging'
+    }, prepareData);
 }
 
 function prepareData(results, status) {

@@ -52,7 +52,7 @@
         <tbody>
             @foreach (var o in Model.Offers)
             {
-                <tr>
+                <tr class="@(@o.BOOKED == true ? "booked" : "")">
                     <td class="col-md-2">
                         @o.NAME
                     </td>
@@ -70,13 +70,17 @@
                     </td>
                     <td class="col-md-1">
                         @o.PRICE
-                    </td>
-                    @if (Model.CanEdit)
-                    {
-                        <td>
+                    </td>                    
+                    <td>
+                        @if (!o.BOOKED)
+                        {
+                            @Html.ActionLink("Book room", "Create", "UserReservations", routeValues: null, htmlAttributes: new { id = "registerLink", idoffer = o.ID_OFFER })
+                        }
+                        @if (Model.CanEdit)
+                        {
                             @Html.ActionLink("Edit", "Edit", new { idOffer = o.ID_OFFER })
-                        </td>
-                    }
+                        }
+                    </td>
                 </tr>
             }
         </tbody>

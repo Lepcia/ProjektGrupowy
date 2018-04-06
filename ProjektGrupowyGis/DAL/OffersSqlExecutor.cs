@@ -55,7 +55,8 @@ namespace ProjektGrupowyGis.DAL
             search.priceFrom = string.IsNullOrEmpty(search.priceFrom) ? "0" : search.priceFrom;
             search.priceTo = string.IsNullOrEmpty(search.priceTo) ? "100000" : search.priceTo;
 
-            var sqlQuery = $"SELECT OFFERS.*, HOTELS.NAME AS HOTEL_NAME FROM OFFERS INNER JOIN HOTELS ON HOTELS.ID_HOTEL = OFFERS.ID_HOTEL" +
+            var sqlQuery = $"SELECT OFFERS.*, HOTELS.NAME AS HOTEL_NAME, (SELECT COUNT(1) FROM USER_RESERVATIONS WHERE USER_RESERVATIONS.ID_OFFER = OFFERS.ID_OFFER) AS BOOKED " + 
+                $" FROM OFFERS INNER JOIN HOTELS ON HOTELS.ID_HOTEL = OFFERS.ID_HOTEL" +
                 $" WHERE OFFERS.NAME LIKE '%" + search.nameSearch + "%' AND OFFERS.DESCRIPTION LIKE '%" + search.descriptionSearch + "%' AND HOTELS.NAME LIKE '%" + search.hotelName + "%'" +
                 $" AND OFFERS.DATE_START BETWEEN @dateFrom AND @dateTo AND OFFERS.DATE_END BETWEEN @dateFrom AND @dateTo AND OFFERS.PRICE BETWEEN @priceFrom AND @priceTo " +
                 $" AND OFFERS.PEOPLE_FROM >= @peopleFrom and OFFERS.PEOPLE_TO <= @peopleTo";

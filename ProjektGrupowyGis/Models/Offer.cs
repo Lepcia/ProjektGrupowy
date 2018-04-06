@@ -29,7 +29,9 @@ namespace ProjektGrupowyGis.Models
         [Display(Name = "People from")]
         public int PEOPLE_FROM { get; set; }
         [Display(Name = "People to")]
-        public int PEOPLE_TO { get; set; }  
+        public int PEOPLE_TO { get; set; }
+        [Display(Name = "Booked")]
+        public bool BOOKED { get; set; }
     }
 
     public class OffersModel

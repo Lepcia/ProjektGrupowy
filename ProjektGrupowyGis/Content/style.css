@@ -114,3 +114,7 @@ button.clearButton {
 visible-item {
     display: inherit;
 }
+
+.booked {
+    background-color: #ccc !important;
+}
