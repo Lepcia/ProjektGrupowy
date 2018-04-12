@@ -9,9 +9,11 @@ var myPos;
 var myPosMarker;
 var infoWindow;
 var tempIndex;
+var Admin = false;
 
 
 function initialize() {
+    checkIfAdmin();
     var myOptions = {
         zoom: 18,
         zoomControl: true,
@@ -103,6 +105,23 @@ function checkIfHotelsInDB() {
                 if (result.response == 0) {
                     saveHotelsInDB();
                 }
+            }
+        });
+    }
+    catch (e) { }
+}
+
+function checkIfAdmin() {
+    console.log("CheckIfAdmin");
+    try {
+        $.ajax({
+            url: "/Account/IsUserAdmin",
+            type: "GET",
+            dataType: "json",
+            data: null,
+            success: function (result) {
+                console.log(result);
+                Admin = result;
             }
         });
     }
@@ -203,7 +222,7 @@ function searchLocationsDB() {
             console.log(result);
             tempIndex = 1;
             for (var i = 0; i < result.length; i++) {
-                createMarkerDB(result[i]);
+                createMarkerDB(result[i], Admin);
                 addPlaceToTableDB(result[i]);
             }
             showPlacesList();

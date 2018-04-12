@@ -62,6 +62,15 @@ namespace ProjektGrupowyGis.Controllers
             return View(model);
         }
 
+        [AcceptVerbs("GET")]
+        public ActionResult IsUserAdmin()
+        {
+            var user = HttpContext.User.Identity; 
+            bool isAdmin = user.Name == "Admin" ? true : false;
+            var response = new { response = isAdmin };
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();

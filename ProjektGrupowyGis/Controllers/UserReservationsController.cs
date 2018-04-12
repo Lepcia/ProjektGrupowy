@@ -13,11 +13,13 @@ namespace ProjektGrupowyGis.Controllers
     {
         private AccountSqlExecutor _accountSqlExecutor;
         private ReservationsSqlExecutor _reservationsSqlExecutor;
+        private OffersSqlExecutor _offerSqlExecutor;
 
         public UserReservationsController()
         {
             _accountSqlExecutor = new AccountSqlExecutor();
             _reservationsSqlExecutor = new ReservationsSqlExecutor();
+            _offerSqlExecutor = new OffersSqlExecutor();
         }
 
         public ActionResult Index(UserReservationSearch search, int? page, string offerName, string hotelName, string dateFrom,
@@ -56,7 +58,34 @@ namespace ProjektGrupowyGis.Controllers
 
         public ActionResult Create(int idOffer)
         {
-            UserReservationModel model = new UserReservationModel();
+            Offer offer = _offerSqlExecutor.FindOfferById(idOffer);
+
+            List<SelectListItem> guestNumberList = new List<SelectListItem>();
+            for (int i = offer.PEOPLE_FROM; i <= offer.PEOPLE_TO; i++)
+            {
+                guestNumberList.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+            }
+            var user = HttpContext.User.Identity;
+            var idUser = _accountSqlExecutor.GetUserId(user.Name);
+
+            UserReservationEdit model = new UserReservationEdit { Offer = offer, Reservation = new UserReservationFullData(), GuestsSelect = guestNumberList, IdUser = idUser};
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(UserReservationEdit model)
+        {
+            List<Guest> selectedGuests = model.Guests.Where(g => g.FIRST_NAME != null).ToList();
+            UserReservation reservation = new UserReservation { ID_OFFER = model.Offer.ID_OFFER, ID_USER = model.IdUser, RESERVATION_DATE = DateTime.Now, GUESTS = selectedGuests.Count};
+            int idReservation = _reservationsSqlExecutor.AddReservation(reservation);
+
+            foreach (Guest guest in selectedGuests)
+            {
+                _reservationsSqlExecutor.AddGuestToReservation(idReservation, guest);
+            }
+
+            _offerSqlExecutor.SetAsBooked(model.Offer.ID_OFFER);
             return View(model);
         }
     }

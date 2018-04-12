@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ProjektGrupowyGis.Models
 {
@@ -70,5 +71,14 @@ namespace ProjektGrupowyGis.Models
         public string priceTo { get; set; }
         public string guestsFrom { get; set; }
         public string guestsTo { get; set; }
+    }
+
+    public class UserReservationEdit
+    { 
+        public int IdUser { get; set; }
+        public Offer Offer { get; set; }
+        public UserReservationFullData Reservation { get; set; }
+        public List<Guest> Guests { get; set; }
+        public List<SelectListItem> GuestsSelect { get; set; }
     }
 }

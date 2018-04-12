@@ -4,6 +4,7 @@ function createMarker(place) {
     console.log("Create marker");
     var marker = new google.maps.Marker({
         map: map,
+        draggable: true,
         position: place.geometry.location,
         clickable: true
     });
@@ -21,13 +22,18 @@ function createMarker(place) {
     allMarkers.push(marker);
 }
 
-function createMarkerDB(place) {
+function createMarkerDB(place, isAdmin) {
     console.log("Create marker");
     var markPos = new google.maps.LatLng(place.Lat, place.Lng)
     var marker = new google.maps.Marker({
         map: map,
+        draggable: Boolean(isAdmin),
         position: markPos,
         clickable: true
+    });
+    google.maps.event.addListener(marker, 'dragend', function () {
+        geocodePosition(marker.getPosition(), marker, place);       
+        
     });
 
     var content = createMarkerContentDB(place);
@@ -41,6 +47,47 @@ function createMarkerDB(place) {
         marker.info.open(map, marker);
     });
     allMarkers.push(marker);
+}
+
+function geocodePosition(pos, marker, place) {
+    geocoder = new google.maps.Geocoder();
+    geocoder.geocode
+        ({
+            latLng: pos
+        },
+        function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                place.FullAddress = results[0].formatted_address;
+                place.Lat = marker.getPosition().lat();
+                place.Lng = marker.getPosition().lng();
+
+                var content = createMarkerContentDB(place);
+                marker.info = new google.maps.InfoWindow({
+                    content: content,
+                    maxHeight: 200
+                });
+
+                changeHotelAddress(place);
+                return results;
+                $("#mapErrorMsg").hide(100);
+            }
+            else {
+                $("#mapErrorMsg").html('Cannot determine address at this location.' + status).show(100);
+                return "";
+            }
+        }
+        );
+}
+
+function changeHotelAddress(place) {
+    $.ajax({
+        url: "/Hotels/ChangeHotelAddress",
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(place)
+    });
 }
 
 function createMarkerContentDB(place) {

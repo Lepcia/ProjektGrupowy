@@ -72,9 +72,9 @@
                         @o.PRICE
                     </td>                    
                     <td>
-                        @if (!o.BOOKED)
+                        @if (!o.BOOKED && Model.CanBook)
                         {
-                            @Html.ActionLink("Book room", "Create", "UserReservations", routeValues: null, htmlAttributes: new { id = "registerLink", idoffer = o.ID_OFFER })
+                            @Html.ActionLink("Book a room", "Create", "UserReservations", new { idOffer = o.ID_OFFER }, null)
                         }
                         @if (Model.CanEdit)
                         {

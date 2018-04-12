@@ -68,6 +68,20 @@ namespace ProjektGrupowyGis.Controllers
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult ChangeHotelAddress(HotelAddress hotel)
+        {
+            if (User.Identity.Name == "Admin")
+            {
+                _hotelsSqlExecutor.EditHotel(hotel.Id_Hotel, hotel.Name, hotel.FullAddress, null, null, hotel.Lat, hotel.Lng);
+
+                var response = new { response = "ok" };
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+
+            else return RedirectToAction("Index");
+        }
+
         public ActionResult AddHotel(Hotel hotel) {
             _hotelsSqlExecutor.AddHotel(hotel);
             var response = new { response = "ok" };

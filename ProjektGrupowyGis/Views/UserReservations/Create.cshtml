@@ -1,67 +1,67 @@
-﻿@model ProjektGrupowyGis.Models.UserReservation
+﻿@model ProjektGrupowyGis.Models.UserReservationEdit
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Book a room</h2>
 
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>UserReservation</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.ID_USER_RESERVATION, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ID_USER_RESERVATION, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ID_USER_RESERVATION, "", new { @class = "text-danger" })
-            </div>
-        </div>
+@using (Html.BeginForm("Create", "UserReservations", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{@Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ID_OFFER, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ID_OFFER, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ID_OFFER, "", new { @class = "text-danger" })
-            </div>
-        </div>
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Offer.ID_OFFER)
+    @Html.HiddenFor(model => model.IdUser)
+    @Html.HiddenFor(model => model.Offer.PEOPLE_TO)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ID_USER, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ID_USER, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ID_USER, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RESERVATION_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RESERVATION_DATE, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RESERVATION_DATE, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.GUESTS, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GUESTS, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GUESTS, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        <div class="">
+            <h4>@Model.Offer.NAME</h4>
+            <p><b>@Model.Offer.HOTEL_NAME</b></p>
+            <p><b>Date: </b>@Html.DisplayFor(m => m.Offer.DATE_START) - @Html.DisplayFor(m => m.Offer.DATE_END)</p>
+            <p><b>Room for </b>@Model.Offer.PEOPLE_FROM - @Model.Offer.PEOPLE_TO</p>
+            <p><b>Price: </b>@Model.Offer.PRICE zł</p>
+            <p><b>Description: </b>@Model.Offer.DESCRIPTION</p>
         </div>
     </div>
+    <div class="form-group">
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.Reservation.GUESTS, htmlAttributes: new { @class = "control-label" })
+        </div>
+        <div class="col-md-4">
+            @Html.DropDownList("GuestsNumber", (IEnumerable<SelectListItem>)Model.GuestsSelect, htmlAttributes: new { @class = "control-label", @onchange = "GuestsNumberSelected(this.value)" })
+        </div>
+    </div>
+    @for (int i = 0; i < Model.Offer.PEOPLE_TO; i++)
+    {
+        <div class="form-group" id="@i-guest" style="display: none;">
+            <div class="col-md-2">
+                @Html.Label("First name", htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Guests[i].FIRST_NAME, htmlAttributes: new { @class = "control-label form-control" })
+                @Html.ValidationMessageFor(m => m.Guests[i].FIRST_NAME, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("Last name", htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Guests[i].LAST_NAME, htmlAttributes: new { @class = "control-label form-control" })
+                @Html.ValidationMessageFor(m => m.Guests[i].LAST_NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <div class="col-md-offset-10 col-md-11">
+            <input type="submit" value="Confirm" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
@@ -70,4 +70,31 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+
+    window.onload = function () {
+        var minPeople = @Model.Offer.PEOPLE_FROM;
+        for (var i = 0; i < minPeople; i++) {
+            document.getElementById(i + "-guest").style.display = "block";
+            document.getElementsByName("Guests[" + i + "].FIRST_NAME")[0].required = true;
+            document.getElementsByName("Guests[" + i + "].LAST_NAME")[0].required = true;
+        }
+    }
+
+    function GuestsNumberSelected(val)
+    {
+        var maxPeople = @Model.Offer.PEOPLE_TO;
+
+        for (var i = 0; i < val; i++) {
+            document.getElementById(i + "-guest").style.display = "block";
+            document.getElementsByName("Guests[" + i + "].FIRST_NAME")[0].required = true;
+            document.getElementsByName("Guests[" + i + "].LAST_NAME")[0].required = true;
+        }
+        for (var i = val; i < maxPeople; i++) {
+            document.getElementById(i + "-guest").style.display = "none";
+            document.getElementsByName("Guests[" + i + "].FIRST_NAME")[0].required = false;
+            document.getElementsByName("Guests[" + i + "].LAST_NAME")[0].required = false;
+        }
+    }
+    </script>
 }

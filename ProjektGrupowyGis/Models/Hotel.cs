@@ -32,6 +32,16 @@ namespace ProjektGrupowyGis.Models
         public int RatesCount { get; set; } = 0;
     }
 
+    public class HotelAddress
+    {
+        public string Id_Hotel { get; set; }
+        public string Place_Id { get; set; }
+        public string Name { get; set; }
+        public string FullAddress { get; set; }
+        public string Lat { get; set; }
+        public string Lng { get; set; }
+    }
+
     public class SearchByRadius
     {
         public int Radius { get; set; }

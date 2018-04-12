@@ -15,11 +15,12 @@ namespace ProjektGrupowyGis.DAL
         private string _connectionString = ConfigurationManager.ConnectionStrings["Context"].ConnectionString;
         private IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["Context"].ConnectionString);
 
-        public void AddReservation(UserReservation reservation)
+        public int AddReservation(UserReservation reservation)
         {
-            var sqlQuery = $"INSERT INTO USER_RESERVATIONS (ID_OFFER, ID_USER, RESERVATION_DATE)" +
-                           $"VALUES(@ID_OFFER, @ID_USER, @RESERVATION_DATE); SELECT CAST(SCOPE_IDENTITY() AS INT";
+            var sqlQuery = $"INSERT INTO USER_RESERVATIONS (ID_OFFER, ID_USER, RESERVATION_DATE, GUESTS)" +
+                           $"VALUES(@ID_OFFER, @ID_USER, @RESERVATION_DATE, @GUESTS); SELECT CAST(SCOPE_IDENTITY() AS INT)";
             int id = db.Query<int>(sqlQuery, reservation).SingleOrDefault();
+            return id;
         }
 
         public List<Guest> GetGuestsToReservation(int idReservation)
@@ -28,6 +29,14 @@ namespace ProjektGrupowyGis.DAL
 
             List<Guest> guests = db.Query<Guest>(sqlQuery).ToList();
             return guests;
+        }
+
+        public void AddGuestToReservation(int idReservation, Guest guest)
+        {
+            var sqlQuery = $"INSERT INTO GUESTS (ID_USER_RESERVATION, FIRST_NAME, LAST_NAME) " +
+                $"VALUES('{idReservation}', @FIRST_NAME, @LAST_NAME)";
+
+            db.Query<Guest>(sqlQuery, guest);
         }
 
         public List<UserReservationFullData> GetAllReservations()

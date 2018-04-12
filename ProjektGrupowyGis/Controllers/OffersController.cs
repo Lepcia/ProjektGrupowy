@@ -49,9 +49,10 @@ namespace ProjektGrupowyGis.Controllers
             int pageNumber = (page ?? 1);
             var user = HttpContext.User.Identity;
             bool canEdit = user.Name == "Admin" ? true : false;
+            bool canBook = user.Name != "" ? true : false;
 
             var offers = _offersSqlExecutor.FilterOffers(search);
-            OffersModel model = new OffersModel { Offers = offers.ToPagedList<Offer>(pageNumber, pageSize), CanEdit = canEdit, Search = search };
+            OffersModel model = new OffersModel { Offers = offers.ToPagedList<Offer>(pageNumber, pageSize), CanEdit = canEdit, CanBook = canBook, Search = search };
             return View(model);            
         }
 

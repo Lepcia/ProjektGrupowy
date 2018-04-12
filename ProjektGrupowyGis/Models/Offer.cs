@@ -10,7 +10,7 @@ namespace ProjektGrupowyGis.Models
 {
     public class Offer
     {
-        public int? ID_OFFER { get; set; }
+        public int ID_OFFER { get; set; }
         public string ID_HOTEL { get; set; }
         [Display(Name = "Hotel Name")]
         public string HOTEL_NAME { get; set; }
@@ -19,10 +19,10 @@ namespace ProjektGrupowyGis.Models
         [Display(Name = "Description")]
         public String DESCRIPTION { get; set; }
         [Display(Name = "Start date")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime DATE_START { get; set; }
         [Display(Name = "End date")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime DATE_END { get; set; }
         [Display(Name = "Price")]
         public float PRICE { get; set; }
@@ -39,6 +39,7 @@ namespace ProjektGrupowyGis.Models
         public IPagedList<Offer> Offers { get; set; }
         public OffersSearch Search { get; set; }
         public bool CanEdit { get; set; }
+        public bool CanBook { get; set; }
         public int? page { get; set; }
     }
 
