@@ -31,13 +31,6 @@ namespace ProjektGrupowyGis.DAL
             Offer offerE = db.Query<Offer>(sqlQuery, offer).SingleOrDefault();
         }
 
-        public void SetAsBooked(int idOffer)
-        {
-            var sqlQuery = $"UPDATE OFFERS SET BOOKED = TRUE WHERE ID_OFFER = '{idOffer}'; SELECT * FROM OFFERS WHERE ID_OFFER = '{idOffer}'";
-
-            Offer offer = db.Query<Offer>(sqlQuery).SingleOrDefault();
-        }
-
         public List<Offer> GetOffers()
         {
             var sqlQuery = $"SELECT OFFERS.*, HOTELS.NAME AS HOTEL_NAME FROM OFFERS INNER JOIN HOTELS ON HOTELS.ID_HOTEL = OFFERS.ID_HOTEL";
@@ -70,5 +63,6 @@ namespace ProjektGrupowyGis.DAL
             List<Offer> offers = db.Query<Offer>(sqlQuery, search).ToList();
             return offers;
         }
+
     }
 }

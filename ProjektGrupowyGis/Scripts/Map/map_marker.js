@@ -63,6 +63,7 @@ function geocodePosition(pos, marker, place) {
                 place.Lng = marker.getPosition().lng();
 
                 var content = createMarkerContentDB(place);
+                marker.info = null;
                 marker.info = new google.maps.InfoWindow({
                     content: content,
                     maxHeight: 200

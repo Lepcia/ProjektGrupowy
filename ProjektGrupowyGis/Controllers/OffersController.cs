@@ -87,6 +87,43 @@ namespace ProjektGrupowyGis.Controllers
             else return RedirectToAction("Index");
         }
 
+        public ActionResult GenerateOffers()
+        {
+            if (User.Identity.Name == "Admin")
+            {
+                List<string> hotelsIds = _hotelsSqlExecutor.GetAllHotelsIds();
+                string[] names = getOfferNames();
+                string[] descriptions = getOfferDescriptions();
+
+                Random rand = new Random();
+
+                foreach (string hotelId in hotelsIds)
+                {
+                    int countOfHotelRooms = rand.Next(15, 51);
+                    for (int i = 0; i < countOfHotelRooms; i++)
+                    {
+                        int typeOfRoom = rand.Next(0, 7);
+                        // room data
+                        string name = names[typeOfRoom];
+                        string description = descriptions[typeOfRoom];
+                        int price = generatePrice(typeOfRoom);
+                        int[,] peopleInRoom = generateHotelRoomCount(typeOfRoom);
+
+                        DateTime thisDay = DateTime.Today;
+                        DateTime startDay = thisDay.AddDays(rand.Next(1, 60));
+                        DateTime endDay = startDay.AddDays(rand.Next(2, 15));
+
+                        Offer offer = new Offer { ID_HOTEL = hotelId, PRICE = price, DATE_START = startDay, DATE_END = endDay,
+                            DESCRIPTION = description, NAME = name, PEOPLE_FROM = peopleInRoom[0, 0], PEOPLE_TO = peopleInRoom[1, 0],BOOKED = false };
+
+                        _offersSqlExecutor.AddOffer(offer);
+                    }
+                }
+
+            }
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public ActionResult Create(Offer offer)
         {
@@ -107,6 +144,137 @@ namespace ProjektGrupowyGis.Controllers
                 return RedirectToAction("Index");
             }
             else return RedirectToAction("Index");
+        }
+
+        private int generatePrice(int hotelType)
+        {
+            Random rand = new Random();
+            int cost;
+
+            switch (hotelType)
+            {
+                case 0:
+                    {
+                        cost = rand.Next(150, 301);
+                        break;
+                    }
+                case 1:
+                    {
+                        cost = rand.Next(300, 601);
+                        break;
+                    }
+                case 2:
+                    {
+                        cost = rand.Next(600, 1001);
+                        break;
+                    }
+                case 3:
+                    {
+                        cost = rand.Next(400, 601);
+                        break;
+                    }
+                case 4:
+                    {
+                        cost = rand.Next(300, 501);
+                        break;
+                    }
+                case 5:
+                    {
+                        cost = rand.Next(100, 201);
+                        break;
+                    }
+                case 6:
+                    {
+                        cost = rand.Next(800, 1201);
+                        break;
+                    }
+                default:
+                    {
+                        cost = cost = rand.Next(200, 1201);
+                        break;
+                    }
+            }
+            return cost;
+        }
+
+        private int[,] generateHotelRoomCount(int hotelType)
+        {
+            Random rand = new Random();
+            int[,] count;
+
+            switch (hotelType)
+            {
+                case 0:
+                    {
+                        count = new int[,] { { 1 }, { 3 } };
+                        break;
+                    }
+                case 1:
+                    {
+                        count = new int[,] { { 1 }, { 3 } };
+                        break;
+                    }
+                case 2:
+                    {
+                        count = new int[,] { { 2 }, { 2 } };
+                        break;
+                    }
+                case 3:
+                    {
+                        count = new int[,] { { 1 }, { 5 } };
+                        break;
+                    }
+                case 4:
+                    {
+                        count = new int[,] { { 1 }, { 1 } };
+                        break;
+                    }
+                case 5:
+                    {
+                        count = new int[,] { { 1 }, { 3 } };
+                        break;
+                    }
+                case 6:
+                    {
+                        count = new int[,] { { 2 }, { 2 } };
+                        break;
+                    }
+                default:
+                    {
+                        count = new int[,] { { 1 }, { 2 } };
+                        break;
+                    }
+            }
+
+            return count;
+        }
+
+        private string[] getOfferNames()
+        {
+            string[] names = {
+                    "Basic",
+                    "Premium",
+                    "Dla dwojga",
+                    "Wypoczynek",
+                    "Biznes",
+                    "Budget",
+                    "Romantyczny czas"
+                };
+            return names;
+        }
+
+        private string[] getOfferDescriptions()
+        {
+            string[] descriptions = {
+                    "Podstawowy pokój w przystępnej cenie",
+                    "Luksusowy apartament klasy premium, barek w cenie",
+                    "Luksusowy apartament dla dwojga z łożem małżeńskim",
+                    "Oferta skierowana dla klientów nastawionych na wypoczynek, w pakiecie zestaw spa i open bar",
+                    "Pokój klasy biznes",
+                    "Przystepna oferta dla każdego klienta",
+                    "Apartament dla dwojga z pakietem spa oraz romantyczną kolacją"
+                             };
+            return descriptions;
         }
     }
 }

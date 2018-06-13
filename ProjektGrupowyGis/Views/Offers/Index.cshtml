@@ -45,7 +45,10 @@
                 <th class="col-md-1">Price</th>
                 @if (Model.CanEdit)
                 {
-                    <th class="pl-4">@Html.ActionLink(" ", "Create", null, new { @class= "glyphicon glyphicon-plus" })</th>
+                    <th class="pl-4">
+                        @Html.ActionLink(" ", "Create", null, new { @class= "glyphicon glyphicon-plus" })
+                        @Html.ActionLink("Generuj", "GenerateOffers")
+                    </th>
                 }
             </tr>
         </thead>

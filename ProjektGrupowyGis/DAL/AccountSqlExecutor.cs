@@ -43,6 +43,20 @@ namespace ProjektGrupowyGis.DAL
             var id = db.Query<int>(sqlQuery).SingleOrDefault();
             return id;
         }
+
+        public User GetUserById(int idUser)
+        {
+            var sqlQuery = $"SELECT * FROM USERS WHERE ID_USER = '{idUser}'";
+            User user = db.Query<User>(sqlQuery).SingleOrDefault();
+            return user;
+        }
+
+        public string GetUserEmail(int idUser)
+        {
+            var sqlQuery = $"SELECT EMAIL FROM USERS WHERE ID_USER = '{idUser}'";
+            string email = db.Query<string>(sqlQuery).SingleOrDefault();
+            return email;
+        }
         
     }
 }

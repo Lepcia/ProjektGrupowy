@@ -308,3 +308,5 @@ C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.M
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.xml
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\bin\PagedList.Mvc.xml
 C:\Users\TOSH-DARIA\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csproj.CopyComplete
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csproj.CoreCompileInputs.cache
+C:\Users\Daria_log\OneDrive\ProjektGrupowyGis\ProjektGrupowyGis\obj\Debug\ProjektGrupowyGis.csproj.CopyComplete

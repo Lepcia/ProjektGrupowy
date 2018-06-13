@@ -4,6 +4,9 @@ using ProjektGrupowyGis.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -73,6 +76,12 @@ namespace ProjektGrupowyGis.Controllers
             return View(model);
         }
 
+        public ActionResult Delete(int idReservation)
+        {
+            _reservationsSqlExecutor.DeleteUserReservation(idReservation);
+            return RedirectToAction("Index", "UserReservations");
+        }
+
         [HttpPost]
         public ActionResult Create(UserReservationEdit model)
         {
@@ -84,9 +93,11 @@ namespace ProjektGrupowyGis.Controllers
             {
                 _reservationsSqlExecutor.AddGuestToReservation(idReservation, guest);
             }
-
-            _offerSqlExecutor.SetAsBooked(model.Offer.ID_OFFER);
-            return View(model);
+            
+            UserReservationFullData reservationFullData = _reservationsSqlExecutor.GetReservationById(idReservation);
+            User user = _accountSqlExecutor.GetUserById(model.IdUser);
+            return RedirectToAction("Index");
         }
+
     }
 }

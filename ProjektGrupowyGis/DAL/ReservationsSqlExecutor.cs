@@ -54,6 +54,17 @@ namespace ProjektGrupowyGis.DAL
             return reservations; 
         }
 
+        public UserReservationFullData GetReservationById(int idReseration)
+        {
+            var sqlQuery = $"SELECT USER_RESERVATIONS.*, OFFERS.ID_HOTEL, OFFERS.NAME, OFFERS.DESCRIPTION, OFFERS.DATE_START," +
+                $"OFFERS.DATE_END, OFFERS.PRICE, OFFERS.PEOPLE_FROM, OFFERS.PEOPLE_TO, HOTELS.NAME AS HOTEL_NAME " +
+                $"FROM USER_RESERVATIONS INNER JOIN OFFERS ON USER_RESERVATIONS.ID_OFFER = OFFERS.ID_OFFER " +
+                $"INNER JOIN HOTELS ON OFFERS.ID_HOTEL = HOTELS.ID_HOTEL WHERE ID_USER_RESERVATION = '{idReseration}'";
+
+            UserReservationFullData reservation = db.Query<UserReservationFullData>(sqlQuery).SingleOrDefault();
+            return reservation;
+        }
+
         public List<UserReservationFullData> GetUserReservations(int idUser)
         {
             var sqlQuery = $"SELECT USER_RESERVATIONS.*, OFFERS.ID_HOTEL, OFFERS.NAME, OFFERS.DESCRIPTION, OFFERS.DATE_START," +
@@ -98,7 +109,7 @@ namespace ProjektGrupowyGis.DAL
 
         public void DeleteUserReservation(int idUserReservation)
         {
-            var sqlQuery = $"DELETE FROM USER_RESERVATIONS WHERE ID_USER_RESERVATION = '{idUserReservation}'";
+            var sqlQuery = $"DELETE FROM GUESTS WHERE ID_USER_RESERVATION = '{idUserReservation}'; DELETE FROM USER_RESERVATIONS WHERE ID_USER_RESERVATION = '{idUserReservation}'";
             db.Query<int>(sqlQuery);
         }
     }

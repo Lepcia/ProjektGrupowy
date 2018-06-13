@@ -46,6 +46,13 @@ namespace ProjektGrupowyGis.DAL
             return hotels;
         }
 
+        public List<string> GetAllHotelsIds()
+        {
+            var sqlQuery = $"SELECT ID_HOTEL FROM HOTELS";
+            List<string> hotelsIds = db.Query<string>(sqlQuery).ToList();
+            return hotelsIds;
+        }
+
         public List<Hotel> GetHotelsWithUserRate(int idUser) {
             var sqlQuery = $"SELECT HOTELS.*, (SELECT coalesce(AVG(Cast(HOTEL_RATES.RATE as Float)), 0) FROM HOTEL_RATES WHERE HOTEL_RATES.ID_HOTEL = HOTELS.ID_HOTEL) AS AVG_RATE," +
                $"(select coalesce(rate, 0) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL and ID_USER = " + idUser + " ) as USER_RATE, (SELECT COUNT(*) from HOTEL_RATES where ID_HOTEL = HOTELS.ID_HOTEL) as RATESCOUNT FROM HOTELS";

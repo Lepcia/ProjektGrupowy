@@ -69,7 +69,7 @@
                     <td class="col-md-1">
                         @r.PRICE
                     </td>
-                    <td>@Html.ActionLink(" ", "Delete", null, new { @class = "glyphicon glyphicon-remove-circle", idReservation = r.ID_USER_RESERVATION })</td>
+                    <td>@Html.ActionLink("Cancel", "Delete", new { idReservation = r.ID_USER_RESERVATION })</td>
                 </tr>
             }
         </tbody>
