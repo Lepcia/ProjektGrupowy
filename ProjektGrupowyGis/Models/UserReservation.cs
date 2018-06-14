@@ -21,7 +21,7 @@ namespace ProjektGrupowyGis.Models
     {
         public int ID_USER_RESERVATION { get; set; }
         public int? ID_OFFER { get; set; }
-        public int? ID_USER { get; set; }
+        public int ID_USER { get; set; }
         [Display(Name = "Guests")]
         public int GUESTS { get; set; }
         [Display(Name = "Reservation date")]

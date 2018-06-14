@@ -1,4 +1,5 @@
 ﻿using PagedList;
+using ProjektGrupowyGis.API;
 using ProjektGrupowyGis.DAL;
 using ProjektGrupowyGis.Models;
 using System;
@@ -72,13 +73,16 @@ namespace ProjektGrupowyGis.Controllers
             var idUser = _accountSqlExecutor.GetUserId(user.Name);
 
             UserReservationEdit model = new UserReservationEdit { Offer = offer, Reservation = new UserReservationFullData(), GuestsSelect = guestNumberList, IdUser = idUser};
-
+            
             return View(model);
         }
 
         public ActionResult Delete(int idReservation)
         {
+            var reservation = _reservationsSqlExecutor.GetReservationById(idReservation);
+            EmailService.SendReservationCancelarEmail(new AccountSqlExecutor().GetUserById(reservation.ID_USER).Email, reservation);
             _reservationsSqlExecutor.DeleteUserReservation(idReservation);
+            
             return RedirectToAction("Index", "UserReservations");
         }
 
@@ -96,6 +100,7 @@ namespace ProjektGrupowyGis.Controllers
             
             UserReservationFullData reservationFullData = _reservationsSqlExecutor.GetReservationById(idReservation);
             User user = _accountSqlExecutor.GetUserById(model.IdUser);
+            EmailService.SendReservationEmail(user.Email, reservationFullData);
             return RedirectToAction("Index");
         }
 

@@ -7,6 +7,7 @@ using ProjektGrupowyGis.Models;
 using System.Threading.Tasks;
 using ProjektGrupowyGis.DAL;
 using System.Web.Security;
+using ProjektGrupowyGis.API;
 
 namespace ProjektGrupowyGis.Controllers
 {
@@ -39,6 +40,7 @@ namespace ProjektGrupowyGis.Controllers
                 }
                 User user = new User { Login = model.Login, Name = model.Name, Email = model.Email, Password = model.Password, UserId = null };
                 _accountSqlExecutor.AddUser(user);
+                EmailService.SendWelcomeEmail(user.Email);
                 return RedirectToAction("Login", "Account");
             }
             return View(model);
